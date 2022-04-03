@@ -127,6 +127,19 @@ object List:
       case Nil => Nil
       case Cons(h, xs) => Cons(operator(head(as).get, head(bs).get), operate(tail(as), tail(bs), operator))
 
+  
+  def hasPrefix[A](superset: List[A], prefix: List[A]): Boolean = 
+    (superset, prefix) match            
+      case(_, Nil) => true
+      case(Nil, _) => false
+      case(Cons(h1, t1), Cons(h2, t2)) =>         
+        if(h1 != h2) then false else hasPrefix(t1, t2)
+
+  def hasSubset[A](superset: List[A], subset: List[A]): Boolean =     
+    (subset, superset) match
+      case(Nil, _) => true
+      case(_, Nil) => false
+      case(Cons(h1, t1), Cons(h2, t2)) => if(hasPrefix(superset, subset)) then true else hasSubset(t2, subset)
 
 def runCheck(): Unit = 
   println("Check")
@@ -224,12 +237,21 @@ def runOperator(): Unit =
   println(List.operate(List(1,2,3,4), List(5,6,7,8), _+_))  
   println(List.operate(List("foo","bar","baaz","cheetah"), List(0,1,3,4), _.charAt(_)))  
 
+def runHasSubset(): Unit = 
+  println("hasSubset")
+  println(List.hasSubset(List(1,2,3,4), List(1)))  
+  println(List.hasSubset(List("foo","bar","baaz","cheetah"), List("foo","bar","baaz")))
+  println(List.hasSubset(List("foo","bar","baaz","cheetah"), List("bar","baaz")))
+  println(List.hasSubset(List("foo","bar","baaz","cheetah"), List("foo","baaz")))
+  println(List.hasSubset(List("foo","bar","baaz","cheetah"), List()))
+  println(List.hasSubset(List(), List("foo")))
+  println(List.hasSubset(List(), List()))
 
 @main def functional_data_structure: Unit = 
   // runCheck()
   // runTail()
   // runSetHead()
-  runDrop()
+  // runDrop()
   // runDropWhile()
   // runAppend()
   // runInit()
@@ -242,3 +264,4 @@ def runOperator(): Unit =
   // runFilter()
   // runFlatMap()
   // runOperator()
+  runHasSubset()
